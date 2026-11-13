@@ -326,7 +326,7 @@ Simulation provides predictable and repeatable testing of success, temporary fai
 
 It does not represent a real external credit verification integration.
 
-9. Assumptions
+## 9. Assumptions
 
 The loan approval process is used as the demonstration workflow.
 
@@ -344,7 +344,7 @@ Rule and workflow configuration changes require a restart.
 
 The current implementation targets a local demonstration environment.
 
-10. Limitations and Future Improvements
+## 10. Limitations and Future Improvements
 
 Potential extensions include:
 
@@ -364,7 +364,7 @@ Monitoring, metrics, and distributed tracing.
 
 Stronger transaction and concurrency guarantees.
 
-11. Conclusion
+## 11. Conclusion
 
 FlowGuard demonstrates a modular workflow decision platform that combines configurable business rules, explicit workflow states, idempotent request handling, bounded retries, persistent execution records, and decision audit trails.
 
