@@ -61,4 +61,34 @@ describe("FlowGuard Rules Engine", () => {
     expect(result.decision).toBe("MANUAL_REVIEW");
   });
 
+  
+it("should apply changed business rules without changing engine code", () => {
+  const modifiedConfig = {
+    workflowName: "Loan Approval",
+    version: 2,
+    rules: [
+      {
+        id: "R1",
+        name: "Updated Minimum Age",
+        field: "age",
+        operator: ">=",
+        value: 21,
+        type: "MANDATORY",
+        failureAction: "REJECT",
+        reason: "Applicant must be at least 21 years old"
+      }
+    ]
+  };
+
+  const result = evaluateRules(
+    { age: 19 },
+    modifiedConfig
+  );
+
+  expect(result.workflowVersion).toBe(2);
+  expect(result.decision).toBe("REJECTED");
+  expect(result.ruleTrace[0].expectedValue).toBe(21);
+});
+
+
 });

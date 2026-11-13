@@ -1,6 +1,5 @@
 
-import workflowConfig from "../config/workflow.json"
-  with { type: "json" };
+import { readFileSync } from "node:fs";
 
 import { evaluateRules } from "./ruleEngine.js";
 import { verifyCreditScore } from "./creditService.js";
@@ -9,6 +8,12 @@ export async function executeWorkflow(
   input,
   { dependencyMode = "SUCCESS" } = {}
 ) {
+    const workflowConfig = JSON.parse(
+  readFileSync(
+    new URL("../config/workflow.json", import.meta.url),
+    "utf-8"
+  )
+);
   let status = "RECEIVED";
   const history = [];
   let retryCount = 0;

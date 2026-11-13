@@ -1,53 +1,41 @@
 
-import rulesConfig from "../config/rules.json"
-  with { type: "json" };
+import { readFileSync } from "node:fs";
 
-// Generic comparison function
+function loadRulesConfig() {
+  const configPath = new URL(
+    "../config/rules.json",
+    import.meta.url
+  );
+
+  return JSON.parse(readFileSync(configPath, "utf-8"));
+}
+
 function compare(actual, operator, expected) {
   switch (operator) {
-    case ">":
-      return actual > expected;
-
-    case "<":
-      return actual < expected;
-
-    case ">=":
-      return actual >= expected;
-
-    case "<=":
-      return actual <= expected;
-
-    case "==":
-      return actual === expected;
-
-    case "!=":
-      return actual !== expected;
-
+    case ">": return actual > expected;
+    case "<": return actual < expected;
+    case ">=": return actual >= expected;
+    case "<=": return actual <= expected;
+    case "==": return actual === expected;
+    case "!=": return actual !== expected;
     default:
       throw new Error(`Unsupported operator: ${operator}`);
   }
 }
 
-// Evaluate all configured rules
-export function evaluateRules(input, config = rulesConfig) {
+export function evaluateRules(input, config = null) {
+  // Load the latest file configuration for every evaluation.
+  const activeConfig = config ?? loadRulesConfig();
 
   const results = [];
 
-  for (const rule of config.rules) {
-
+  for (const rule of activeConfig.rules) {
     const actualValue = input[rule.field];
 
-    // Resolve expected value
-    let expectedValue;
+    const expectedValue = rule.valueFrom
+      ? input[rule.valueFrom] * (rule.multiplier ?? 1)
+      : rule.value;
 
-    if (rule.valueFrom) {
-      expectedValue =
-        input[rule.valueFrom] * (rule.multiplier ?? 1);
-    } else {
-      expectedValue = rule.value;
-    }
-
-    // Check missing values
     if (
       actualValue === undefined ||
       actualValue === null ||
@@ -59,14 +47,14 @@ export function evaluateRules(input, config = rulesConfig) {
       results.push({
         ruleId: rule.id,
         ruleName: rule.name,
-        passed: false,
+        field: rule.field,
         actualValue: actualValue ?? null,
         expectedValue,
         operator: rule.operator,
+        passed: false,
         action: "MANUAL_REVIEW",
         reason: "Required numeric value is missing or invalid"
       });
-
       continue;
     }
 
@@ -91,22 +79,24 @@ export function evaluateRules(input, config = rulesConfig) {
     });
   }
 
-  // Determine final decision
   let decision = "APPROVED";
 
-  if (results.some(r => !r.passed && r.action === "REJECT")) {
+  if (results.some(
+    rule => !rule.passed && rule.action === "REJECT"
+  )) {
     decision = "REJECTED";
-  } else if (results.some(r => !r.passed)) {
+  } else if (results.some(rule => !rule.passed)) {
     decision = "MANUAL_REVIEW";
   }
 
   return {
-    workflowName: config.workflowName,
-    workflowVersion: config.version,
+    workflowName: activeConfig.workflowName,
+    workflowVersion: activeConfig.version,
     decision,
     totalRules: results.length,
-    passedRules: results.filter(r => r.passed).length,
-    failedRules: results.filter(r => !r.passed).length,
+    passedRules: results.filter(rule => rule.passed).length,
+    failedRules: results.filter(rule => !rule.passed).length,
     ruleTrace: results
   };
 }
+
