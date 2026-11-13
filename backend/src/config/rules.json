@@ -1,0 +1,48 @@
+
+{
+  "workflowName": "Loan Approval",
+  "version": 1,
+  "rules": [
+    {
+      "id": "R1",
+      "name": "Minimum Age",
+      "field": "age",
+      "operator": ">=",
+      "value": 18,
+      "type": "MANDATORY",
+      "failureAction": "REJECT",
+      "reason": "Applicant must be at least 18 years old"
+    },
+    {
+      "id": "R2",
+      "name": "Minimum Income",
+      "field": "monthlyIncome",
+      "operator": ">=",
+      "value": 20000,
+      "type": "MANDATORY",
+      "failureAction": "REJECT",
+      "reason": "Monthly income is below the minimum requirement"
+    },
+    {
+      "id": "R3",
+      "name": "Credit Score",
+      "field": "creditScore",
+      "operator": ">=",
+      "value": 700,
+      "type": "THRESHOLD",
+      "failureAction": "MANUAL_REVIEW",
+      "reason": "Credit score is below the approval threshold"
+    },
+    {
+      "id": "R4",
+      "name": "Loan Amount Limit",
+      "field": "loanAmount",
+      "operator": "<=",
+      "valueFrom": "monthlyIncome",
+      "multiplier": 10,
+      "type": "THRESHOLD",
+      "failureAction": "MANUAL_REVIEW",
+      "reason": "Loan amount exceeds ten times monthly income"
+    }
+  ]
+}

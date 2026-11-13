@@ -1,0 +1,27 @@
+
+{
+  "workflowName": "Loan Approval",
+  "version": 1,
+  "stages": [
+    {
+      "id": "validation",
+      "type": "VALIDATION"
+    },
+    {
+      "id": "rules",
+      "type": "RULE_EVALUATION"
+    },
+    {
+      "id": "creditCheck",
+      "type": "EXTERNAL_DEPENDENCY"
+    },
+    {
+      "id": "finalDecision",
+      "type": "DECISION"
+    }
+  ],
+  "retryPolicy": {
+    "maxAttempts": 3,
+    "onFailure": "MANUAL_REVIEW"
+  }
+}
