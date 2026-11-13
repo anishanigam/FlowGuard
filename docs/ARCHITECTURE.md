@@ -324,4 +324,48 @@ The trade-off is that some temporary outages may persist beyond the configured r
 
 Simulation provides predictable and repeatable testing of success, temporary failure, and permanent failure scenarios.
 
-It does not represent a real external credit verification
+It does not represent a real external credit verification integration.
+
+9. Assumptions
+
+The loan approval process is used as the demonstration workflow.
+
+Application inputs are provided as JSON.
+
+The credit verification service is simulated.
+
+Request IDs are unique identifiers supplied by clients.
+
+The database is available when the backend starts.
+
+The workflow is executed synchronously.
+
+Rule and workflow configuration changes require a restart.
+
+The current implementation targets a local demonstration environment.
+
+10. Limitations and Future Improvements
+
+Potential extensions include:
+
+Dynamic execution of workflow stages from configuration.
+
+Runtime configuration management through APIs.
+
+Persistent retry scheduling and recovery of interrupted executions.
+
+Role-based access control.
+
+Real external service integrations.
+
+Background execution using a message queue.
+
+Monitoring, metrics, and distributed tracing.
+
+Stronger transaction and concurrency guarantees.
+
+11. Conclusion
+
+FlowGuard demonstrates a modular workflow decision platform that combines configurable business rules, explicit workflow states, idempotent request handling, bounded retries, persistent execution records, and decision audit trails.
+
+Its separation of validation, decision logic, orchestration, external dependencies, and persistence provides a foundation for extending the system to other business workflows beyond loan approval.
