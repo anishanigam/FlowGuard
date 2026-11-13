@@ -51,7 +51,7 @@ function App() {
     setForm(previous => ({
       ...previous,
       [name]:
-        name === "name" ? value : Number(value)
+        name === "name" ? value : value === "" ? "" : Number(value)
     }));
   }
 
@@ -211,6 +211,7 @@ function App() {
                   <label>Age</label>
                   <input
                     type="number"
+                    inputMode="numeric"
                     name="age"
                     value={form.age}
                     onChange={handleChange}
@@ -221,6 +222,7 @@ function App() {
                   <label>Credit score</label>
                   <input
                     type="number"
+                    inputMode="numeric"
                     name="creditScore"
                     value={form.creditScore}
                     onChange={handleChange}
